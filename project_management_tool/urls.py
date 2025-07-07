@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenRefreshView
+
+from project_management_tool.views import UserRegistrationView, UserLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,6 +27,10 @@ urlpatterns = [
     path('api/projects',include("projects.urls")),
     path('api/task',include("task.urls")),
     path('api/comments',include("comments.urls")),
+
+    path('users/register/', UserRegistrationView.as_view(), name='user-register'),
+    path('users/login/', UserLoginView.as_view(), name='user-login'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
