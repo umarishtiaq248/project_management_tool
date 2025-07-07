@@ -21,10 +21,9 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Custom API
-    path('api/user',include("users.urls")),
-    path('api/projects',include("users.urls")),
-    path('api/task',include("users.urls")),
-    path('api/comments',include("users.urls")),
+    path('api/projects',include("project.urls")),
+    path('api/task',include("task.urls")),
+    path('api/comments',include("comments.urls")),
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

@@ -50,7 +50,6 @@ Third_Party_Apps = [
 Custom_Apps = [
     "projects",
     "task",
-    "users",
     "comments",
 ]
 
