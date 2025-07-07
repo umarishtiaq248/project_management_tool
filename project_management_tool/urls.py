@@ -21,7 +21,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Custom API
-    path('api/projects',include("project.urls")),
+    path('api/projects',include("projects.urls")),
     path('api/task',include("task.urls")),
     path('api/comments',include("comments.urls")),
     # API Documentation
