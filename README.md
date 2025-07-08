@@ -386,7 +386,3 @@ python manage.py check
 You can set the following environment variables for production:
 - `SECRET_KEY`: Django secret key
 - `DEBUG`: Set to 'false' for production
-
-## License
-
-This project is licensed under the MIT License.
