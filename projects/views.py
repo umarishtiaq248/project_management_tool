@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -36,11 +35,24 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def add_member(self, request, pk=None):
         project = self.get_object()
+
+        # Check if user is admin of the project
+        try:
+            member = ProjectMember.objects.get(project=project, user=request.user)
+            if member.role != 'Admin':
+                return Response({'error': 'Only project admins can add members'}, status=403)
+        except ProjectMember.DoesNotExist:
+            return Response({'error': 'You are not a member of this project'}, status=403)
+
         user_id = request.data.get('user_id')
         role = request.data.get('role', 'Member')
 
         if not user_id:
             return Response({'error': 'user_id is required'}, status=400)
+
+        # Validate role
+        if role not in ['Admin', 'Member']:
+            return Response({'error': 'Invalid role. Must be Admin or Member'}, status=400)
 
         try:
             user = User.objects.get(id=user_id)

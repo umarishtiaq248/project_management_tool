@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -20,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-no+ps0lx@3i7ga9v%kh4y8*=n$p+0$)=lf^2m)u*o6g+%v%sm+'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-no+ps0lx@3i7ga9v%kh4y8*=n$p+0$)=lf^2m)u*o6g+%v%sm+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -33,7 +34,7 @@ ALLOWED_HOSTS = [
 
 # Application definition
 
-Default_Apps = [
+default_apps = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,19 +42,19 @@ Default_Apps = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-Third_Party_Apps = [
+third_party_apps = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'drf_spectacular',
 ]
-Custom_Apps = [
+custom_apps = [
     "projects",
     "task",
     "comments",
 ]
 
-INSTALLED_APPS = Default_Apps + Third_Party_Apps + Custom_Apps
+INSTALLED_APPS = default_apps + third_party_apps + custom_apps
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

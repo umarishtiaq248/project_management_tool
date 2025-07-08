@@ -21,6 +21,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'owner', 'created_at', 'members']
         read_only_fields = ['id', 'created_at']
 
-    def create(self, validated_data):
-        validated_data['owner'] = self.context['request'].user
-        return super().create(validated_data)
+    def validate_name(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError('Project name cannot be empty')
+        if len(value) > 255:
+            raise serializers.ValidationError('Project name cannot exceed 255 characters')
+        return value.strip()
+
+    def validate_description(self, value):
+        if value and len(value) > 1000:
+            raise serializers.ValidationError('Project description cannot exceed 1000 characters')
+        return value

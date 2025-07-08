@@ -17,11 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from project_management_tool.views import UserRegistrationView, UserLoginView
+from project_management_tool.views import UserRegistrationView, UserLoginView, UserViewSet
 
+router = DefaultRouter()
+router.register(r'users', UserViewSet)
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
     # Custom API
     path('api/projects',include("projects.urls")),

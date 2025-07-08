@@ -1,12 +1,12 @@
 from django.db import models
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from comments.models import Comment
-from comments.serializer import CommentSerializer
+from comments.serializers import CommentSerializer
 from projects.models import Project
 from task.models import Task
 from task.serializers import TaskSerializer
@@ -20,7 +20,16 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         project_id = self.kwargs.get('project_pk')
         if project_id:
-            return Task.objects.filter(project_id=project_id)
+            # Ensure user has access to the project
+            try:
+                project = Project.objects.get(
+                    models.Q(id=project_id) &
+                    (models.Q(owner=self.request.user) |
+                     models.Q(members__user=self.request.user))
+                )
+                return Task.objects.filter(project=project)
+            except Project.DoesNotExist:
+                return Task.objects.none()
         return Task.objects.filter(
             project__in=Project.objects.filter(
                 models.Q(owner=self.request.user) |
@@ -31,7 +40,14 @@ class TaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         project_id = self.kwargs.get('project_pk')
         if project_id:
-            project = get_object_or_404(Project, id=project_id)
+            # Ensure user has access to the project
+            project = get_object_or_404(
+                Project.objects.filter(
+                    models.Q(id=project_id) &
+                    (models.Q(owner=self.request.user) |
+                     models.Q(members__user=self.request.user))
+                )
+            )
             serializer.save(project=project)
         else:
             serializer.save()
